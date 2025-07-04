@@ -1,1 +1,85 @@
-THIS SHOULD BE A LINTER ERROR
+apply plugin: "com.android.application"
+apply plugin: "com.facebook.react"
+
+android {
+    compileSdkVersion 33
+    buildToolsVersion "33.0.0"
+
+    namespace "com.earthquakeevacuation"
+
+    defaultConfig {
+        applicationId "com.earthquakeevacuation"
+        minSdkVersion 21
+        targetSdkVersion 33
+        versionCode 1
+        versionName "1.0.0"
+        multiDexEnabled true
+        
+        ndk {
+            abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+        }
+    }
+
+    signingConfigs {
+        release {
+            if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
+                storeFile file(MYAPP_RELEASE_STORE_FILE)
+                storePassword MYAPP_RELEASE_STORE_PASSWORD
+                keyAlias MYAPP_RELEASE_KEY_ALIAS
+                keyPassword MYAPP_RELEASE_KEY_PASSWORD
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
+        }
+    }
+
+    packagingOptions {
+        pickFirst "**/armeabi-v7a/libc++_shared.so"
+        pickFirst "**/x86/libc++_shared.so"
+        pickFirst "**/arm64-v8a/libc++_shared.so"
+        pickFirst "**/x86_64/libc++_shared.so"
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "com.facebook.react:react-native:+"
+    
+    // Android Support
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.core:core:1.10.1'
+    implementation 'com.google.android.material:material:1.9.0'
+    
+    // Location Services
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    
+    // Firebase
+    implementation platform('com.google.firebase:firebase-bom:32.2.0')
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.firebase:firebase-analytics'
+    
+    // Camera and AR
+    implementation 'androidx.camera:camera-core:1.2.3'
+    implementation 'androidx.camera:camera-view:1.2.3'
+    
+    // Background Tasks
+    implementation 'androidx.work:work-runtime:2.8.1'
+    
+    // Testing
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}
+
+apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
